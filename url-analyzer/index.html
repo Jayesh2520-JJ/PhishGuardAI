@@ -70,7 +70,7 @@
         .logo {
             font-weight: 800;
             font-size: 0.9rem;
-            letter-spacing: 4px; /* Premium tracking */
+            letter-spacing: 4px;
             background: linear-gradient(to right, var(--accent-blue), var(--accent-purple));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -83,7 +83,7 @@
             font-size: 3rem;
             margin: 0.5rem 0;
             font-weight: 800;
-            letter-spacing: -1px; /* Modern tight heading */
+            letter-spacing: -1px;
             background: linear-gradient(180deg, #ffffff 0%, #a5a5a5 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -165,14 +165,14 @@
             width: 120px;
             height: 120px;
             border-radius: 50%;
-            border: 2px solid var(--safe-green);
+            border: 2px solid var(--accent-blue);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             margin: 0 auto 1.5rem;
-            background: radial-gradient(circle, rgba(0, 255, 136, 0.05) 0%, transparent 70%);
-            box-shadow: 0 0 30px rgba(0, 255, 136, 0.1);
+            background: radial-gradient(circle, rgba(0, 210, 255, 0.05) 0%, transparent 70%);
+            box-shadow: 0 0 30px rgba(0, 210, 255, 0.1);
             transition: all 0.5s ease;
         }
 
@@ -210,6 +210,18 @@
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
+        /* Pulse animation for loading state */
+        .analyzing {
+            animation: pulse 1.5s infinite ease-in-out;
+            color: var(--accent-blue);
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
     </style>
 </head>
 <body>
@@ -245,47 +257,57 @@
             const scoreNum = document.getElementById('aiScore');
             const statusMsg = document.getElementById('statusMessage');
             const circle = document.getElementById('scoreCircle');
-            const url = document.getElementById('urlInput').value.trim().toLowerCase();
+            const urlInput = document.getElementById('urlInput');
+            const url = urlInput.value.trim().toLowerCase();
 
             if (!url) return;
 
-            let score = 100;
-
-            if (/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}/.test(url)) score -= 40;
-            if (url.includes('@')) score -= 30;
-            if (/(0|1|l|o).*\.(com|net|org|xyz)/.test(url)) {
-                if (url.includes('0') || url.includes('1')) score -= 35;
-            }
-            if (url.length > 70) score -= 15;
-            const dots = (url.match(/\./g) || []).length;
-            if (dots > 3) score -= 20;
-
-            const suspiciousKeywords = ['login', 'verify', 'update', 'secure', 'banking', 'account', 'signin', 'wp-admin'];
-            suspiciousKeywords.forEach(word => {
-                if (url.includes(word)) score -= 15;
-            });
-
-            if (url.includes("google.com") || url.includes("github.com") || url.includes("microsoft.com")) {
-                if (!url.includes('0') && !url.includes('1')) {
-                    score = Math.max(score, 98);
-                }
-            }
-
-            score = Math.max(5, Math.min(100, score));
+            // Show loading state
             resultArea.style.display = 'block';
-            scoreNum.innerText = score + '%';
+            statusMsg.innerHTML = "<span class='analyzing'>Running heuristic analysis...</span>";
+            scoreNum.innerText = "---";
+            circle.style.borderColor = "var(--accent-blue)";
+            circle.style.boxShadow = "0 0 30px rgba(0, 210, 255, 0.2)";
 
-            if (score >= 75) {
-                statusMsg.innerHTML = "✓ <span style='margin-left:8px'>This URL is Safe to use.</span>";
-                statusMsg.className = "status-msg safe";
-                circle.style.borderColor = "var(--safe-green)";
-                circle.style.boxShadow = "0 0 30px rgba(0, 255, 136, 0.2)";
-            } else {
-                statusMsg.innerHTML = "⚠ <span style='margin-left:8px'>Warning: This URL is Malicious!</span>";
-                statusMsg.className = "status-msg malicious";
-                circle.style.borderColor = "var(--danger-red)";
-                circle.style.boxShadow = "0 0 30px rgba(255, 75, 43, 0.2)";
-            }
+            // Artificial delay to simulate AI processing/API connection
+            setTimeout(() => {
+                let score = 100;
+
+                if (/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}/.test(url)) score -= 40;
+                if (url.includes('@')) score -= 30;
+                if (/(0|1|l|o).*\.(com|net|org|xyz)/.test(url)) {
+                    if (url.includes('0') || url.includes('1')) score -= 35;
+                }
+                if (url.length > 70) score -= 15;
+                const dots = (url.match(/\./g) || []).length;
+                if (dots > 3) score -= 20;
+
+                const suspiciousKeywords = ['login', 'verify', 'update', 'secure', 'banking', 'account', 'signin', 'wp-admin'];
+                suspiciousKeywords.forEach(word => {
+                    if (url.includes(word)) score -= 15;
+                });
+
+                if (url.includes("google.com") || url.includes("github.com") || url.includes("microsoft.com")) {
+                    if (!url.includes('0') && !url.includes('1')) {
+                        score = Math.max(score, 98);
+                    }
+                }
+
+                score = Math.max(5, Math.min(100, score));
+                scoreNum.innerText = score + '%';
+
+                if (score >= 75) {
+                    statusMsg.innerHTML = "✓ <span style='margin-left:8px'>This URL is Safe to use.</span>";
+                    statusMsg.className = "status-msg safe";
+                    circle.style.borderColor = "var(--safe-green)";
+                    circle.style.boxShadow = "0 0 30px rgba(0, 255, 136, 0.2)";
+                } else {
+                    statusMsg.innerHTML = "⚠ <span style='margin-left:8px'>Warning: This URL is Malicious!</span>";
+                    statusMsg.className = "status-msg malicious";
+                    circle.style.borderColor = "var(--danger-red)";
+                    circle.style.boxShadow = "0 0 30px rgba(255, 75, 43, 0.2)";
+                }
+            }, 1200); 
         }
     </script>
 </body>
