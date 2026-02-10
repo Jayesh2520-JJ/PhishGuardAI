@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhishGuard AI | Advanced Threat Detection</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { background-color: #020617; }
+        .glass { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(12px); }
+        .tab-active { border-bottom: 2px solid #06b6d4; color: #06b6d4; background: rgba(30, 41, 59, 0.5); }
+    </style>
+</head>
+<body class="text-slate-100 font-sans">
+
+    <nav class="border-b border-slate-800 sticky top-0 z-50 glass">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div class="bg-cyan-600 p-2 rounded-lg">
+                    <i class="fas fa-shield-alt text-white"></i>
+                </div>
+                <span class="font-bold text-xl tracking-tighter">PhishGuard<span class="text-cyan-500">AI</span></span>
+            </div>
+            <div class="hidden md:flex gap-8 text-sm font-medium text-slate-400">
+                <a href="#" class="hover:text-cyan-400 transition">Database</a>
+                <a href="#" class="hover:text-cyan-400 transition">API</a>
+                <a href="#" class="hover:text-cyan-400 transition">Documentation</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-5xl mx-auto px-6 pt-16 pb-20">
+        <div class="text-center mb-12">
+            <h1 class="text-4xl md:text-6xl font-black mb-6 bg-gradient-to-r from-white to-slate-500 bg-clip-text text-transparent">
+                Stop Phishing <br>Before It Happens.
+            </h1>
+            <p class="text-slate-400 text-lg max-w-2xl mx-auto">
+                Scan suspicious links and files using our proprietary ML engine and global threat intelligence.
+            </p>
+        </div>
+
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl overflow-hidden max-w-3xl mx-auto">
+            <div class="flex border-b border-slate-800">
+                <button id="urlTab" onclick="switchTab('url')" class="flex-1 py-4 flex items-center justify-center gap-2 transition-all tab-active">
+                    <i class="fas fa-globe"></i>
+                    <span class="font-semibold">URL Scanner</span>
+                </button>
+                <button id="fileTab" onclick="switchTab('file')" class="flex-1 py-4 flex items-center justify-center gap-2 transition-all text-slate-500 hover:text-slate-300">
+                    <i class="fas fa-file-medical"></i>
+                    <span class="font-semibold">File Analysis</span>
+                </button>
+            </div>
+
+            <div class="p-8 md:p-10">
+                <div id="urlSection" class="space-y-4">
+                    <div class="relative">
+                        <input type="text" id="urlInput" placeholder="https://example-phish-site.net" 
+                            class="w-full bg-black border border-slate-700 rounded-xl px-6 py-4 text-lg focus:outline-none focus:ring-2 focus:ring-cyan-500/50 transition-all">
+                    </div>
+                    <button onclick="analyzeURL()" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-4 rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-cyan-900/20">
+                        <i class="fas fa-bolt"></i> Scan for Threats
+                    </button>
+                </div>
+
+                <div id="fileSection" class="hidden">
+                    <div class="border-2 border-dashed border-slate-700 rounded-2xl p-10 text-center hover:border-cyan-500/50 transition-colors group cursor-pointer bg-black/40">
+                        <div class="bg-slate-800 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-cloud-upload-alt text-2xl text-slate-400"></i>
+                        </div>
+                        <p class="text-lg font-medium">Drag & Drop suspicious file</p>
+                        <p class="text-sm text-slate-500 mt-1">PDF, DOCX, or EXE (Max 10MB)</p>
+                        <input type="file" class="hidden" id="fileInput">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-16 text-center opacity-50">
+            <div class="text-xs font-mono uppercase tracking-widest">Zero-Day Detection</div>
+            <div class="text-xs font-mono uppercase tracking-widest">Heuristic Analysis</div>
+            <div class="text-xs font-mono uppercase tracking-widest">SSL Verification</div>
+            <div class="text-xs font-mono uppercase tracking-widest">AI Scoring</div>
+        </div>
+    </main>
+
+    <script>
+        function switchTab(type) {
+            const urlSection = document.getElementById('urlSection');
+            const fileSection = document.getElementById('fileSection');
+            const urlTab = document.getElementById('urlTab');
+            const fileTab = document.getElementById('fileTab');
+
+            if (type === 'url') {
+                urlSection.classList.remove('hidden');
+                fileSection.classList.add('hidden');
+                urlTab.classList.add('tab-active');
+                fileTab.classList.remove('tab-active');
+                fileTab.classList.add('text-slate-500');
+            } else {
+                fileSection.classList.remove('hidden');
+                urlSection.classList.add('hidden');
+                fileTab.classList.add('tab-active');
+                urlTab.classList.remove('tab-active');
+                urlTab.classList.add('text-slate-500');
+            }
+        }
+
+        function analyzeURL() {
+            const url = document.getElementById('urlInput').value;
+            if(!url) return alert("Please enter a URL");
+            alert("Analyzing: " + url + "\n(This is where we'll connect to your Vercel Python API!)");
+        }
+    </script>
+</body>
+</html>
