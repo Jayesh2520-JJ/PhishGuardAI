@@ -10,6 +10,13 @@
         body { background-color: #020617; }
         .glass { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(12px); }
         .tab-active { border-bottom: 2px solid #06b6d4; color: #06b6d4; background: rgba(30, 41, 59, 0.5); }
+        /* Glassmorphism effect for the hero section */
+        .hero-glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 2rem;
+        }
     </style>
 </head>
 <body class="text-slate-100 font-sans">
@@ -22,16 +29,11 @@
                 </div>
                 <span class="font-bold text-xl tracking-tighter">PhishGuard<span class="text-cyan-500">AI</span></span>
             </div>
-            <div class="hidden md:flex gap-8 text-sm font-medium text-slate-400">
-                <a href="#" class="hover:text-cyan-400 transition">Database</a>
-                <a href="#" class="hover:text-cyan-400 transition">API</a>
-                <a href="#" class="hover:text-cyan-400 transition">Documentation</a>
             </div>
-        </div>
     </nav>
 
     <main class="max-w-5xl mx-auto px-6 pt-16 pb-20">
-        <div class="text-center mb-12">
+        <div class="text-center mb-12 py-12 px-6 hero-glass">
             <h1 class="text-4xl md:text-6xl font-black mb-6 bg-gradient-to-r from-white to-slate-500 bg-clip-text text-transparent">
                 Stop Phishing <br>Before It Happens.
             </h1>
