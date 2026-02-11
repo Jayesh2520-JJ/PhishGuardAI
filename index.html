@@ -10,7 +10,6 @@
         body { background-color: #020617; }
         .glass { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(12px); }
         .tab-active { border-bottom: 2px solid #06b6d4; color: #06b6d4; background: rgba(30, 41, 59, 0.5); }
-        /* Glassmorphism effect for the hero section */
         .hero-glass {
             background: rgba(255, 255, 255, 0.02);
             backdrop-filter: blur(10px);
@@ -40,42 +39,45 @@
                 Stop Phishing <br>Before It Happens.
             </h1>
             <p class="text-slate-400 text-lg md:text-xl max-w-2xl mx-auto font-light leading-relaxed tracking-wide">
-                Scan suspicious links and files using our proprietary <span class="text-slate-200 font-medium">ML engine</span> and global threat intelligence.
+                Protect your digital perimeter with our real-time <span class="text-slate-200 font-medium">AI analysis</span> for suspicious links and files.
             </p>
         </div>
 
-        <div class="bg-slate-900/50 border border-slate-800 rounded-3xl shadow-2xl overflow-hidden max-w-3xl mx-auto">
+        <div class="bg-slate-900/50 border border-slate-800 rounded-3xl shadow-2xl overflow-hidden max-w-2xl mx-auto">
             <div class="flex border-b border-slate-800">
                 <button id="urlTab" onclick="switchTab('url')" class="flex-1 py-4 flex items-center justify-center gap-2 transition-all tab-active">
-                    <i class="fas fa-globe"></i>
+                    <i class="fas fa-link"></i>
                     <span class="font-semibold tracking-tight">URL Scanner</span>
                 </button>
                 <button id="fileTab" onclick="switchTab('file')" class="flex-1 py-4 flex items-center justify-center gap-2 transition-all text-slate-500 hover:text-slate-300">
-                    <i class="fas fa-file-medical"></i>
+                    <i class="fas fa-file-shield"></i>
                     <span class="font-semibold tracking-tight">File Analysis</span>
                 </button>
             </div>
 
-            <div class="p-8 md:p-10">
-                <div id="urlSection" class="space-y-4">
-                    <div class="relative">
-                        <input type="text" id="urlInput" placeholder="https://example-phish-site.net" 
-                            class="w-full bg-black/50 border border-slate-700 rounded-xl px-6 py-4 text-lg focus:outline-none focus:ring-1 focus:ring-cyan-500/50 transition-all placeholder:text-slate-600">
+            <div class="p-10">
+                <div id="urlSection" class="text-center space-y-6">
+                    <div class="bg-cyan-500/5 border border-cyan-500/20 rounded-2xl p-6">
+                        <p class="text-slate-300 mb-6">Launch the advanced URL analyzer to scan links for malicious intent, typosquatting, and zero-day phishing.</p>
+                        <a href="https://phish-guard-ai-one.vercel.app/url-analyzer" 
+                           class="inline-flex w-full items-center justify-center gap-3 bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-5 rounded-xl transition-all shadow-lg shadow-cyan-900/20 active:scale-[0.98]">
+                            <i class="fas fa-external-link-alt"></i>
+                            <span class="uppercase tracking-widest text-sm">Open URL Analyzer</span>
+                        </a>
                     </div>
-                    <button onclick="analyzeURL()" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-4 rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-cyan-900/20 active:scale-[0.98]">
-                        <i class="fas fa-bolt"></i> <span class="uppercase tracking-widest text-sm">Scan for Threats</span>
-                    </button>
                 </div>
 
                 <div id="fileSection" class="hidden">
-                    <div class="border-2 border-dashed border-slate-700 rounded-2xl p-10 text-center hover:border-cyan-500/50 transition-colors group cursor-pointer bg-black/40">
-                        <div class="bg-slate-800 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <i class="fas fa-cloud-upload-alt text-2xl text-slate-400"></i>
+                    <label for="fileInput" class="group relative flex flex-col items-center justify-center w-full h-56 border-2 border-dashed border-slate-700 rounded-2xl cursor-pointer bg-black/40 hover:bg-black/60 hover:border-cyan-500/50 transition-all">
+                        <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                            <div class="bg-slate-800 w-16 h-16 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                <i class="fas fa-upload text-2xl text-cyan-400"></i>
+                            </div>
+                            <p class="mb-2 text-lg font-medium text-slate-200">Click to upload file</p>
+                            <p class="text-xs text-slate-500">PDF, DOCX, or EXE (Max 10MB)</p>
                         </div>
-                        <p class="text-lg font-medium tracking-tight">Drag & Drop suspicious file</p>
-                        <p class="text-sm text-slate-500 mt-1">PDF, DOCX, or EXE (Max 10MB)</p>
-                        <input type="file" class="hidden" id="fileInput">
-                    </div>
+                        <input id="fileInput" type="file" class="hidden" onchange="handleFileUpload(this)" />
+                    </label>
                 </div>
             </div>
         </div>
@@ -110,12 +112,12 @@
             }
         }
 
-        function analyzeURL() {
-            const url = document.getElementById('urlInput').value;
-            if(!url) return alert("Please enter a URL");
-            
-            // Redirecting to your Vercel path
-            window.location.href = "https://phish-guard-ai-one.vercel.app/url-analyzer?url=" + encodeURIComponent(url);
+        function handleFileUpload(input) {
+            if (input.files && input.files[0]) {
+                const fileName = input.files[0].name;
+                alert('File "' + fileName + '" selected. Ready for analysis.');
+                // Add your file processing/upload logic here
+            }
         }
     </script>
 </body>
