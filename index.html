@@ -1,4 +1,42 @@
-<script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhishGuardAI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .tab-active { border-bottom: 2px solid #3b82f6; color: #3b82f6; font-weight: bold; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen flex items-center justify-center">
+
+    <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
+        <h1 class="text-2xl font-bold text-center mb-6 text-slate-800">PhishGuardAI</h1>
+        
+        <div class="flex border-b border-slate-200 mb-6">
+            <button id="urlTab" onclick="switchTab('url')" class="flex-1 py-2 tab-active">URL Scanner</button>
+            <button id="fileTab" onclick="switchTab('file')" class="flex-1 py-2 text-slate-500">File Scanner</button>
+        </div>
+
+        <div id="urlSection">
+            <input type="text" id="urlInput" placeholder="Enter URL (e.g., https://example.com)" 
+                   class="w-full p-3 border border-slate-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <button onclick="analyzeURL()" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition">
+                Analyze URL
+            </button>
+        </div>
+
+        <div id="fileSection" class="hidden text-center">
+            <div class="border-2 border-dashed border-slate-300 p-10 rounded-lg">
+                <p class="text-slate-500">Upload a file to scan for phishing signatures</p>
+                <input type="file" class="mt-4 text-sm text-slate-500">
+            </div>
+        </div>
+    </div>
+
+    <script>
         function switchTab(type) {
             const urlSection = document.getElementById('urlSection');
             const fileSection = document.getElementById('fileSection');
@@ -9,12 +47,14 @@
                 urlSection.classList.remove('hidden');
                 fileSection.classList.add('hidden');
                 urlTab.classList.add('tab-active');
+                urlTab.classList.remove('text-slate-500');
                 fileTab.classList.remove('tab-active');
                 fileTab.classList.add('text-slate-500');
             } else {
                 fileSection.classList.remove('hidden');
                 urlSection.classList.add('hidden');
                 fileTab.classList.add('tab-active');
+                fileTab.classList.remove('text-slate-500');
                 urlTab.classList.remove('tab-active');
                 urlTab.classList.add('text-slate-500');
             }
@@ -24,7 +64,9 @@
             const url = document.getElementById('urlInput').value;
             if(!url) return alert("Please enter a URL");
             
-            // Redirects to your specific Vercel path
-            window.location.href = "https://phish-guard-ai-one.vercel.app/url-analyzer";
+            // Redirecting to your Vercel path
+            window.location.href = "https://phish-guard-ai-one.vercel.app/url-analyzer?url=" + encodeURIComponent(url);
         }
     </script>
+</body>
+</html>
