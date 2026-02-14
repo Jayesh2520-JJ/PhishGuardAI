@@ -81,7 +81,6 @@
             background: rgba(34, 211, 238, 0.05);
         }
 
-        /* Scanning Animation Bar */
         .scan-bar {
             display: none;
             position: absolute;
@@ -121,7 +120,6 @@
 
         #fileInput { display: none; }
 
-        /* Result Section */
         #result {
             margin-top: 20px;
             padding: 15px;
@@ -203,13 +201,11 @@
 
         const file = fileInput.files[0];
         
-        // Show loading and animation state
         loadingContainer.style.display = 'flex';
         scanBar.style.display = 'block';
         resultDiv.style.display = 'none';
         uploadTitle.innerText = "Analyzing: " + file.name;
 
-        // Dynamic status updates
         const stages = ["Calculating MD5 Hash...", "Checking Heuristics...", "Running Sandboxed Test...", "Finalizing Report..."];
         let stageIdx = 0;
         const statusInterval = setInterval(() => {
@@ -219,7 +215,6 @@
             }
         }, 700);
 
-        // MOCK ANALYSIS
         setTimeout(() => {
             clearInterval(statusInterval);
             loadingContainer.style.display = 'none';
@@ -229,7 +224,7 @@
 
             if (file.name.endsWith('.exe')) {
                 resultDiv.className = 'danger';
-                resultDiv.innerHTML = `<strong>⚠️ Malicious File Detected!</strong><br>The file "${file.name}" is an executable and may contain harmful code. Do not open it.`;
+                resultDiv.innerHTML = `<strong>⚠️ Malicious File Detected!</strong><br>The file "${file.name}" is an executable and may contain harmful code.`;
             } else {
                 resultDiv.className = 'safe';
                 resultDiv.innerHTML = `<strong>✅ File is Safe</strong><br>"${file.name}" passed the security check. No threats found.`;
