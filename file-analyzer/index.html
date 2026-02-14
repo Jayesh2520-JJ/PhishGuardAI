@@ -1,193 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>File Analyser</title>
-    <style>
-        :root {
-            --bg-color: #0b0f1a;
-            --card-bg: #121826;
-            --accent-blue: #00d1ff;
-            --text-main: #ffffff;
-            --text-dim: #94a3b8;
-            --border-color: #1e293b;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-
-        .container {
-            width: 600px;
-            background-color: var(--card-bg);
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-
-        .tabs {
-            display: flex;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .tab {
-            flex: 1;
-            padding: 15px;
-            text-align: center;
-            cursor: pointer;
-            color: var(--text-dim);
-            transition: 0.3s;
-        }
-
-        .tab.active {
-            color: var(--accent-blue);
-            border-bottom: 2px solid var(--accent-blue);
-            background: rgba(0, 209, 255, 0.05);
-        }
-
-        .upload-area {
-            padding: 40px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .drop-zone {
-            width: 100%;
-            height: 250px;
-            border: 2px dashed #22d3ee;
-            border-radius: 15px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: background 0.3s;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .drop-zone:hover {
-            background: rgba(34, 211, 238, 0.05);
-        }
-
-        .scan-bar {
-            display: none;
-            position: absolute;
-            width: 100%;
-            height: 4px;
-            background: var(--accent-blue);
-            box-shadow: 0 0 15px var(--accent-blue);
-            top: 0;
-            left: 0;
-            z-index: 10;
-            animation: scanMove 1.5s ease-in-out infinite;
-        }
-
-        @keyframes scanMove {
-            0% { top: 0%; }
-            50% { top: 100%; }
-            100% { top: 0%; }
-        }
-
-        .icon-circle {
-            width: 60px;
-            height: 60px;
-            background: rgba(34, 211, 238, 0.1);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 15px;
-        }
-
-        .icon-circle svg {
-            fill: var(--accent-blue);
-        }
-
-        h2 { margin: 10px 0 5px 0; font-size: 1.2rem; }
-        p { color: var(--text-dim); font-size: 0.9rem; margin: 0; }
-
-        #fileInput { display: none; }
-
-        #result {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 8px;
-            display: none;
-            width: 100%;
-            text-align: center;
-        }
-
-        .safe { background: rgba(34, 197, 94, 0.1); border: 1px solid #22c55e; color: #4ade80; }
-        .danger { background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; color: #f87171; }
-        
-        .loading-container {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            margin-top: 15px;
-        }
-
-        .loading-spinner {
-            border: 4px solid rgba(255, 255, 255, 0.1);
-            border-left-color: var(--accent-blue);
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
-        }
-
-        #statusText {
-            margin-top: 10px;
-            font-size: 0.85rem;
-            color: var(--accent-blue);
-            font-weight: bold;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-    </style>
-</head>
-<body>
-
-<div class="container">
-    <div class="tabs">
-        <div class="tab">🔗 URL Scanner</div>
-        <div class="tab active">📁 File Analysis</div>
-    </div>
-
-    <div class="upload-area">
-        <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
-            <div class="scan-bar" id="scanBar"></div>
-            <div class="icon-circle">
-                <svg width="30" height="30" viewBox="0 0 24 24"><path d="M9 16h6v-6h4l-7-7-7 7h4v6zm-4 2h14v2H5v-2z"/></svg>
-            </div>
-            <h2 id="uploadTitle">Click to upload file</h2>
-            <p id="uploadSub">PDF, DOCX, or EXE (Max 10MB)</p>
-        </div>
-        
-        <input type="file" id="fileInput" onchange="analyzeFile()">
-        
-        <div class="loading-container" id="loadingContainer">
-            <div class="loading-spinner"></div>
-            <div id="statusText">Initializing Scan...</div>
-        </div>
-        <div id="result"></div>
-    </div>
-</div>
-
 <script>
     function analyzeFile() {
         const fileInput = document.getElementById('fileInput');
@@ -197,16 +7,26 @@
         const scanBar = document.getElementById('scanBar');
         const uploadTitle = document.getElementById('uploadTitle');
 
+        // Check if a file was actually selected
         if (fileInput.files.length === 0) return;
 
         const file = fileInput.files[0];
         
+        // 1. Reset UI and Start Animation immediately
         loadingContainer.style.display = 'flex';
         scanBar.style.display = 'block';
         resultDiv.style.display = 'none';
         uploadTitle.innerText = "Analyzing: " + file.name;
+        statusText.innerText = "Initializing Scan...";
 
-        const stages = ["Calculating MD5 Hash...", "Checking Heuristics...", "Running Sandboxed Test...", "Finalizing Report..."];
+        // 2. Sequence through the analysis stages
+        const stages = [
+            "Calculating MD5 Hash...", 
+            "Checking Heuristics...", 
+            "Running Sandboxed Test...", 
+            "Finalizing Report..."
+        ];
+        
         let stageIdx = 0;
         const statusInterval = setInterval(() => {
             if(stageIdx < stages.length) {
@@ -215,6 +35,7 @@
             }
         }, 700);
 
+        // 3. Complete the analysis after 3 seconds
         setTimeout(() => {
             clearInterval(statusInterval);
             loadingContainer.style.display = 'none';
@@ -222,16 +43,17 @@
             resultDiv.style.display = 'block';
             uploadTitle.innerText = "Click to upload file";
 
-            if (file.name.endsWith('.exe')) {
+            // Logic to determine safety
+            if (file.name.toLowerCase().endsWith('.exe')) {
                 resultDiv.className = 'danger';
                 resultDiv.innerHTML = `<strong>⚠️ Malicious File Detected!</strong><br>The file "${file.name}" is an executable and may contain harmful code.`;
             } else {
                 resultDiv.className = 'safe';
                 resultDiv.innerHTML = `<strong>✅ File is Safe</strong><br>"${file.name}" passed the security check. No threats found.`;
             }
+            
+            // Clear input so the same file can be uploaded again if needed
+            fileInput.value = "";
         }, 3000); 
     }
 </script>
-
-</body>
-</html>
