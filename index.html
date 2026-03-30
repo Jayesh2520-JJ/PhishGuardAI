@@ -92,7 +92,7 @@
                             <p class="text-slate-400 text-sm mb-6 leading-relaxed">
                                 Our AI inspects URLs for typosquatting, hidden redirects, and zero-day malicious behavior.
                             </p>
-                            <a href="url-analyzer.html" 
+                            <a href="url-analyser.html" 
                                class="group relative inline-flex w-full items-center justify-center gap-3 bg-gradient-to-r from-cyan-600 to-cyan-500 hover:from-cyan-500 hover:to-cyan-400 text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-cyan-900/20 active:scale-[0.97]">
                                 <i class="fas fa-bolt text-xs group-hover:animate-pulse"></i>
                                 <span class="uppercase tracking-[0.15em] text-xs">Open URL Analyzer</span>
@@ -131,19 +131,15 @@
             const fileTab = document.getElementById('fileTab');
 
             if (type === 'url') {
-                // Show URL
                 urlSection.classList.remove('hidden');
                 fileSection.classList.add('hidden');
-                // Tab styling
                 urlTab.classList.add('tab-active');
                 urlTab.classList.remove('text-slate-500');
                 fileTab.classList.remove('tab-active');
                 fileTab.classList.add('text-slate-500');
             } else {
-                // Show File
                 fileSection.classList.remove('hidden');
                 urlSection.classList.add('hidden');
-                // Tab styling
                 fileTab.classList.add('tab-active');
                 fileTab.classList.remove('text-slate-500');
                 urlTab.classList.remove('tab-active');
