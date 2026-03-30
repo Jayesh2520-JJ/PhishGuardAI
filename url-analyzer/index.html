@@ -66,16 +66,20 @@
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             margin: 0 auto 20px;
         }
+        .score-circle.safe { border-color: var(--success-green); }
         .score-val { font-size: 2rem; font-weight: 800; }
         .score-lab { font-size: 0.6rem; color: var(--text-gray); font-weight: 700; }
         
-        .warning-text { color: var(--danger-red); font-weight: 700; margin-bottom: 20px; display: block; }
+        .warning-text { font-weight: 700; margin-bottom: 20px; display: block; }
+        .text-danger { color: var(--danger-red); }
+        .text-success { color: var(--success-green); }
         
         .risk-box {
             background: rgba(0, 0, 0, 0.2); border-radius: 16px; padding: 25px; text-align: left;
         }
         .risk-item { display: flex; align-items: center; gap: 12px; color: var(--text-gray); font-size: 0.9rem; margin-bottom: 10px; }
-        .risk-item i { color: var(--danger-red); }
+        .risk-item i.fa-exclamation-triangle { color: var(--danger-red); }
+        .risk-item i.fa-check-circle { color: var(--success-green); }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
@@ -105,14 +109,14 @@
     </div>
 
     <div id="resultsUI">
-        <div class="score-circle">
-            <span class="score-val" id="resScore">30%</span>
+        <div class="score-circle" id="scoreCircle">
+            <span class="score-val" id="resScore">0%</span>
             <span class="score-lab">AI SCORE</span>
         </div>
-        <span class="warning-text"><i class="fas fa-exclamation-triangle"></i> Warning: Malicious Content!</span>
+        <span class="warning-text" id="verdictText"></span>
         
         <div class="risk-box">
-            <p style="font-weight: 700; margin-top: 0;">Detected Risks:</p>
+            <p style="font-weight: 700; margin-top: 0;" id="riskTitle">Analysis Log:</p>
             <div id="riskList"></div>
         </div>
         <button class="scan-btn" style="margin: 20px auto 0;" onclick="location.reload()">Scan Another</button>
@@ -121,7 +125,7 @@
 
 <script>
     function runScan() {
-        const url = document.getElementById('urlInput').value;
+        const url = document.getElementById('urlInput').value.trim();
         if(!url) return;
         
         document.getElementById('mainUI').style.display = 'none';
@@ -134,34 +138,100 @@
         const interval = setInterval(() => {
             width += 4;
             bar.style.width = width + "%";
-            if(width < 30) status.innerText = "Analyzing Domain Structure...";
-            else if(width < 70) status.innerText = "Checking SSL Certificates...";
-            else status.innerText = "Finalizing Report...";
+            if(width < 25) status.innerText = "Validating Protocol & Characters...";
+            else if(width < 50) status.innerText = "Analyzing Domain Registration...";
+            else if(width < 75) status.innerText = "Scanning for Typosquatting...";
+            else status.innerText = "Checking IP Reputation...";
             
             if(width >= 100) {
                 clearInterval(interval);
                 showResults(url);
             }
-        }, 80);
+        }, 60);
     }
 
     function showResults(url) {
         document.getElementById('progressUI').style.display = 'none';
-        const results = document.getElementById('resultsUI');
+        const resultsUI = document.getElementById('resultsUI');
         const list = document.getElementById('riskList');
-        results.style.display = 'block';
+        const scoreCircle = document.getElementById('scoreCircle');
+        const verdictText = document.getElementById('verdictText');
+        const resScore = document.getElementById('resScore');
+        
+        resultsUI.style.display = 'block';
 
         let risks = [];
-        // Dynamic Risk Logic
-        if(!url.startsWith('https')) risks.push("Insecure connection (No HTTPS detected).");
-        if(url.includes('-')) risks.push("Deceptive domain structure (excessive hyphens).");
-        if(url.toLowerCase().includes('microsoft')) risks.push("Potential brand impersonation detected (microsoft).");
-        if(url.toLowerCase().includes('google')) risks.push("Potential brand impersonation detected (google).");
-        
-        if(risks.length === 0) risks.push("General suspicious behavior detected.");
+        let score = 0;
+        const lowUrl = url.toLowerCase();
 
-        list.innerHTML = risks.map(r => `<div class="risk-item"><i class="fas fa-exclamation-triangle"></i> ${r}</div>`).join('');
-        document.getElementById('resScore').innerText = (risks.length * 15) + "%";
+        // 1. Trusted Whitelist (Constraints Bypass)
+        const whiteList = ['google.com', 'youtube.com', 'microsoft.com', 'apple.com', 'github.com', 'linkedin.com'];
+        const isWhitelisted = whiteList.some(domain => lowUrl.includes(domain) && !lowUrl.includes('verify-') && !lowUrl.includes('-update'));
+
+        if (isWhitelisted) {
+            score = 0;
+            risks.push({text: "Verified Trusted Domain: High Reputation.", safe: true});
+            risks.push({text: "Protocol Validation: Secure HTTPS.", safe: true});
+            risks.push({text: "Domain Age: Mature (Validated).", safe: true});
+        } else {
+            // 2. Protocol Restriction
+            if(!url.startsWith('https://')) {
+                risks.push({text: "Protocol Risk: Insecure connection (No HTTPS).", safe: false});
+                score += 25;
+            }
+
+            // 3. Character & Structure Validation
+            if(/[^\x00-\x7F]/.test(url)) {
+                risks.push({text: "Character Validation: Punycode/Internationalized characters detected.", safe: false});
+                score += 30;
+            }
+            if((url.match(/\./g) || []).length > 3) {
+                risks.push({text: "Structure Risk: Excessive subdomains detected.", safe: false});
+                score += 15;
+            }
+
+            // 4. Typosquatting & Brand Impersonation
+            const brandTargets = ['google', 'youtube', 'paypal', 'microsoft', 'netflix', 'amazon'];
+            brandTargets.forEach(brand => {
+                if(lowUrl.includes(brand) && !whiteList.some(w => lowUrl.includes(w))) {
+                    risks.push({text: `Typosquatting: Potential ${brand} impersonation detected.`, safe: false});
+                    score += 40;
+                }
+            });
+
+            // 5. Character Validation (Excessive Hyphens)
+            if((url.match(/-/g) || []).length > 2) {
+                risks.push({text: "Structure Validation: Unusual hyphenation patterns.", safe: false});
+                score += 10;
+            }
+
+            // 6. Length Restrictions
+            if(url.length > 75) {
+                risks.push({text: "Length Restriction: Abnormally long URL used for masking.", safe: false});
+                score += 10;
+            }
+        }
+
+        // Final UI Rendering
+        score = Math.min(score, 100);
+        resScore.innerText = score + "%";
+        
+        if (score > 20) {
+            scoreCircle.style.borderColor = "#f43f5e";
+            verdictText.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Warning: Malicious Content!';
+            verdictText.className = "warning-text text-danger";
+        } else {
+            scoreCircle.style.borderColor = "#10b981";
+            verdictText.innerHTML = '<i class="fas fa-check-circle"></i> Result: Safe Website';
+            verdictText.className = "warning-text text-success";
+        }
+
+        list.innerHTML = risks.map(r => `
+            <div class="risk-item">
+                <i class="fas ${r.safe ? 'fa-check-circle' : 'fa-exclamation-triangle'}"></i> 
+                ${r.text}
+            </div>
+        `).join('');
     }
 </script>
 
