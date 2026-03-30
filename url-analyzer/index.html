@@ -7,18 +7,19 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
-            --glass-bg: rgba(255, 255, 255, 0.05);
-            --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
             --accent-blue: #00d2ff;
             --accent-purple: #9d50bb;
             --safe-green: #00ff88;
             --danger-red: #ff4b2b;
+            --warning-yellow: #ffcc00;
         }
 
         body {
             margin: 0;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background: radial-gradient(circle at top right, #1a1a2e, #0f0f1a);
+            background: radial-gradient(circle at top right, #1a1a2e, #0a0a12);
             color: #ffffff;
             height: 100vh;
             display: flex;
@@ -30,212 +31,182 @@
 
         .container {
             background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
             border: 1px solid var(--glass-border);
-            border-radius: 24px;
+            border-radius: 32px;
             padding: 3rem;
             width: 90%;
-            max-width: 600px;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            max-width: 650px;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6);
             text-align: center;
             position: relative;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
         }
 
         .home-btn {
             position: absolute;
-            top: 20px;
-            right: 20px;
-            background: var(--glass-bg);
+            top: 25px;
+            right: 25px;
+            background: var(--glass-border);
             border: 1px solid var(--glass-border);
             color: white;
-            padding: 10px;
-            border-radius: 12px;
+            padding: 12px;
+            border-radius: 14px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             text-decoration: none;
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
         }
 
         .home-btn:hover {
             background: rgba(255, 255, 255, 0.1);
-            border-color: var(--accent-blue);
-            transform: translateY(-2px);
+            transform: rotate(90deg);
         }
 
         .logo {
             font-weight: 800;
-            font-size: 0.9rem;
-            letter-spacing: 4px;
+            font-size: 0.8rem;
+            letter-spacing: 5px;
             background: linear-gradient(to right, var(--accent-blue), var(--accent-purple));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
             display: block;
             text-transform: uppercase;
         }
 
         h1 {
-            font-size: 3rem;
+            font-size: 2.8rem;
             margin: 0.5rem 0;
-            font-weight: 800;
-            letter-spacing: -1px;
-            background: linear-gradient(180deg, #ffffff 0%, #a5a5a5 100%);
+            font-weight: 900;
+            letter-spacing: -1.5px;
+            background: linear-gradient(180deg, #ffffff 0%, #888888 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 10px 20px rgba(0,0,0,0.3);
         }
 
-        p.subtitle {
-            color: #a0a0a0;
-            font-weight: 300;
-            letter-spacing: 0.5px;
-            margin-bottom: 2.5rem;
-        }
+        .subtitle { color: #808080; font-weight: 400; margin-bottom: 2.5rem; font-size: 0.95rem; }
 
         .input-group {
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.4);
             border: 1px solid var(--glass-border);
-            border-radius: 16px;
+            border-radius: 20px;
             display: flex;
-            padding: 8px;
-            margin-bottom: 2rem;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            padding: 10px;
+            margin-bottom: 1rem;
+            transition: 0.4s;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);
         }
 
         .input-group:focus-within {
             border-color: var(--accent-blue);
-            box-shadow: 0 0 25px rgba(0, 210, 255, 0.15);
-            transform: scale(1.02);
+            box-shadow: 0 0 30px rgba(0, 210, 255, 0.1);
         }
 
         input {
             background: transparent;
             border: none;
             color: white;
-            padding: 12px 15px;
+            padding: 12px 18px;
             flex-grow: 1;
             outline: none;
-            font-size: 1rem;
-            font-weight: 400;
+            font-size: 1.05rem;
         }
 
-        input::placeholder {
-            color: #555;
-            font-weight: 300;
-        }
-
-        button.scan-btn {
+        .scan-btn {
             background: linear-gradient(45deg, var(--accent-blue), var(--accent-purple));
             border: none;
             color: white;
-            padding: 12px 25px;
-            border-radius: 12px;
+            padding: 0 25px;
+            border-radius: 15px;
             font-weight: 700;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            font-size: 0.8rem;
             cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: 0.3s;
+            text-transform: uppercase;
+            font-size: 0.85rem;
         }
 
-        button.scan-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 210, 255, 0.4);
-            filter: brightness(1.1);
-        }
+        .scan-btn:hover { filter: brightness(1.2); transform: scale(1.05); }
 
         #result-area {
             display: none;
             margin-top: 2rem;
             padding-top: 2rem;
             border-top: 1px solid var(--glass-border);
-            animation: fadeIn 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            animation: slideUp 0.8s ease;
+            overflow-y: auto;
         }
 
         .score-circle {
-            width: 120px;
-            height: 120px;
+            width: 130px;
+            height: 130px;
             border-radius: 50%;
-            border: 2px solid var(--safe-green);
+            border: 4px solid var(--safe-green);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             margin: 0 auto 1.5rem;
-            background: radial-gradient(circle, rgba(0, 255, 136, 0.05) 0%, transparent 70%);
-            box-shadow: 0 0 30px rgba(0, 255, 136, 0.1);
-            transition: all 0.5s ease;
+            background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
+            transition: 0.5s ease;
         }
 
-        .score-num {
-            font-size: 2rem;
-            font-weight: 900;
-            letter-spacing: -1px;
+        .score-num { font-size: 2.2rem; font-weight: 900; letter-spacing: -1px; }
+        .score-label { font-size: 0.7rem; text-transform: uppercase; opacity: 0.5; letter-spacing: 1px; }
+
+        .status-msg { font-size: 1.2rem; font-weight: 700; margin-bottom: 1.5rem; }
+
+        .risk-list {
+            text-align: left;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1.2rem;
+            border-radius: 18px;
+            font-size: 0.9rem;
+            color: #e0e0e0;
+            border: 1px solid var(--glass-border);
         }
 
-        .score-label {
-            font-size: 0.65rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            opacity: 0.6;
-        }
-
-        .status-msg {
-            font-size: 1.1rem;
-            font-weight: 500;
-            letter-spacing: 0.5px;
-        }
-
-        .status-msg.safe { 
-            color: var(--safe-green); 
-            text-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+        .risk-item { 
+            margin-bottom: 8px; 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            animation: fadeIn 0.5s ease forwards;
         }
         
-        .status-msg.malicious { 
-            color: var(--danger-red); 
-            text-shadow: 0 0 15px rgba(255, 75, 43, 0.3);
-        }
+        .risk-item i { font-size: 0.8rem; }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <a href="https://phish-guard-ai-one.vercel.app/" class="home-btn" title="Go Home">
-            <i class="fas fa-home"></i>
-        </a>
-
+        <a href="https://phish-guard-ai-one.vercel.app/" class="home-btn" title="Go Home"><i class="fas fa-home"></i></a>
         <span class="logo">PhishGuard AI</span>
-        <h1>Stop Phishing</h1>
-        <p class="subtitle">Real-time URL intelligence powered by proprietary AI models.</p>
+        <h1>Shield Active</h1>
+        <p class="subtitle">Heuristic-based URL intelligence for deep-threat detection.</p>
 
         <div class="input-group">
-            <input type="text" id="urlInput" placeholder="Enter URL for deep analysis..." value="">
-            <button class="scan-btn" onclick="analyzeURL()">
-                <i class="fas fa-bolt"></i> SCAN NOW
-            </button>
+            <input type="text" id="urlInput" placeholder="Analyze URL for hidden threats...">
+            <button class="scan-btn" onclick="analyzeURL()">Secure Scan</button>
         </div>
 
         <div id="result-area">
             <div id="scoreCircle" class="score-circle">
                 <span class="score-num" id="aiScore">--</span>
-                <span class="score-label">AI Score</span>
+                <span class="score-label">Trust Score</span>
             </div>
             <div id="statusMessage" class="status-msg"></div>
+            <div id="riskAnalysis" class="risk-list"></div>
         </div>
     </div>
 
@@ -245,48 +216,98 @@
             const scoreNum = document.getElementById('aiScore');
             const statusMsg = document.getElementById('statusMessage');
             const circle = document.getElementById('scoreCircle');
+            const riskContainer = document.getElementById('riskAnalysis');
             const urlInput = document.getElementById('urlInput');
             const url = urlInput.value.trim().toLowerCase();
 
             if (!url) return;
 
-            // Analysis logic starts here immediately
             let score = 100;
+            let risks = [];
 
-            if (/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}/.test(url)) score -= 40;
-            if (url.includes('@')) score -= 30;
-            if (/(0|1|l|o).*\.(com|net|org|xyz)/.test(url)) {
-                if (url.includes('0') || url.includes('1')) score -= 35;
+            // 1. Protocol Restriction
+            if (!url.startsWith('https://')) {
+                score -= 20;
+                risks.push("Protocol: Insecure connection (Plain HTTP).");
             }
-            if (url.length > 70) score -= 15;
-            const dots = (url.match(/\./g) || []).length;
-            if (dots > 3) score -= 20;
 
-            const suspiciousKeywords = ['login', 'verify', 'update', 'secure', 'banking', 'account', 'signin', 'wp-admin'];
-            suspiciousKeywords.forEach(word => {
-                if (url.includes(word)) score -= 15;
+            // 2. IP Address & Port Encoding
+            const ipRegex = /(?:\d{1,3}\.){3}\d{1,3}|0x[0-9a-fA-F.]+|0[0-7.]+/;
+            if (ipRegex.test(url)) {
+                score -= 55;
+                risks.push("Encoding: URL points directly to an IP or Hex-coded host.");
+            }
+            if (/(:\d{2,5})/.test(url) && !url.includes("localhost")) {
+                score -= 15;
+                risks.push("Validation: Non-standard port access detected.");
+            }
+
+            // 3. Domain & TLD Risk Analysis
+            try {
+                const urlObj = new URL(url.includes('://') ? url : 'http://' + url);
+                const host = urlObj.hostname;
+                const path = urlObj.pathname;
+
+                // High-risk TLDs
+                const badTLDs = ['.xyz', '.top', '.buzz', '.gq', '.tk', '.ml', '.cf', '.ga', '.bid'];
+                badTLDs.forEach(tld => {
+                    if (host.endsWith(tld)) { score -= 25; risks.push(`TLD Risk: High-risk extension detected (${tld}).`); }
+                });
+
+                // Deceptive Structure
+                if ((host.match(/-/g) || []).length >= 2) {
+                    score -= 30;
+                    risks.push("Structure: Excessive hyphens (common in spoofing).");
+                }
+                
+                // Suspicious Extensions in Path
+                if (/\.(exe|zip|scr|iso|bat|dmg|apk|jar)$/.test(path)) {
+                    score -= 40;
+                    risks.push("Payload: URL points directly to executable/archive.");
+                }
+            } catch(e) { score -= 20; risks.push("Integrity: Malformed URL syntax."); }
+
+            // 4. Obfuscation & Homograph detection
+            if (url.includes('xn--')) { score -= 45; risks.push("Obfuscation: Punycode detected (Homograph attack)."); }
+            if (url.includes('@')) { score -= 40; risks.push("Spoofing: Credential hijacking syntax detected (@)."); }
+            if ((url.match(/%/g) || []).length > 5) { score -= 15; risks.push("Obfuscation: Excessive URL encoding detected."); }
+
+            // 5. Advanced Brand Impersonation (Expanded)
+            const brands = ['google', 'microsoft', 'apple', 'amazon', 'paypal', 'netflix', 'facebook', 'instagram', 'bank', 'secure', 'o2', 'support'];
+            brands.forEach(brand => {
+                if (url.includes(brand) && (url.includes('1') || url.includes('0') || url.includes('-') || url.includes('update'))) {
+                    score -= 35;
+                    risks.push(`Impersonation: Deceptive keyword mimicry (${brand}).`);
+                }
             });
 
-            if (url.includes("google.com") || url.includes("github.com") || url.includes("microsoft.com")) {
-                if (!url.includes('0') && !url.includes('1')) {
-                    score = Math.max(score, 98);
-                }
-            }
+            // 6. Keywords & Shorteners
+            const shorteners = ['bit.ly', 't.co', 'tinyurl', 'is.gd', 'buff.ly'];
+            shorteners.forEach(s => { if (url.includes(s)) { score -= 10; risks.push("Warning: URL shortener obscures destination."); } });
 
+            // Final Calculation
             score = Math.max(5, Math.min(100, score));
-            
-            // Display Results
             resultArea.style.display = 'block';
             scoreNum.innerText = score + '%';
+            
+            riskContainer.innerHTML = risks.length > 0 
+                ? "<strong>Vulnerability Log:</strong><br><br>" + risks.map(r => `<div class='risk-item' style='color:${score < 50 ? "#ff4b2b" : "#ffcc00"}'><i class='fas fa-shield-alt'></i> ${r}</div>`).join('')
+                : "<div class='risk-item' style='color:#00ff88'><i class='fas fa-check-circle'></i> No structural anomalies detected.</div>";
 
+            // Dynamic Aesthetics
             if (score >= 75) {
-                statusMsg.innerHTML = "✓ <span style='margin-left:8px'>This URL is Safe to use.</span>";
-                statusMsg.className = "status-msg safe";
+                statusMsg.innerHTML = "TRUSTED: Safe Link";
+                statusMsg.style.color = "var(--safe-green)";
                 circle.style.borderColor = "var(--safe-green)";
                 circle.style.boxShadow = "0 0 30px rgba(0, 255, 136, 0.2)";
+            } else if (score >= 50) {
+                statusMsg.innerHTML = "CAUTION: Suspicious Link";
+                statusMsg.style.color = "var(--warning-yellow)";
+                circle.style.borderColor = "var(--warning-yellow)";
+                circle.style.boxShadow = "0 0 30px rgba(255, 204, 0, 0.1)";
             } else {
-                statusMsg.innerHTML = "⚠ <span style='margin-left:8px'>Warning: This URL is Malicious!</span>";
-                statusMsg.className = "status-msg malicious";
+                statusMsg.innerHTML = "DANGER: Malicious Link";
+                statusMsg.style.color = "var(--danger-red)";
                 circle.style.borderColor = "var(--danger-red)";
                 circle.style.boxShadow = "0 0 30px rgba(255, 75, 43, 0.2)";
             }
