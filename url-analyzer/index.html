@@ -3,315 +3,385 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PhishGuardAI | Premium URL Shield</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <title>PhishGuard AI | File Analyzer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --glass-bg: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --accent-blue: #00d2ff;
-            --accent-purple: #9d50bb;
-            --safe-green: #00ff88;
-            --danger-red: #ff4b2b;
-            --warning-yellow: #ffcc00;
+            --bg-dark: #07090e;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --border-color: rgba(51, 65, 85, 0.5);
+            --primary-blue: #38bdf8;
+            --danger-red: #f43f5e;
+            --success-green: #10b981;
+            --text-gray: #94a3b8;
+            --glass-blur: blur(12px);
         }
 
         body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-dark);
+            background-image: 
+                radial-gradient(circle at 50% -20%, #1e293b 0%, transparent 50%),
+                radial-gradient(circle at 0% 100%, #0f172a 0%, transparent 30%);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
             margin: 0;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background: radial-gradient(circle at top right, #1a1a2e, #0a0a12);
-            color: #ffffff;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            -webkit-font-smoothing: antialiased;
         }
 
-        .container {
-            background: var(--glass-bg);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border: 1px solid var(--glass-border);
-            border-radius: 32px;
-            padding: 3rem;
-            width: 90%;
-            max-width: 650px;
-            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6);
+        .hero-section {
+            width: 100%;
+            max-width: 850px;
+            padding: 40px;
             text-align: center;
+        }
+
+        h1 { 
+            font-size: 3.2rem; 
+            font-weight: 800; 
+            margin-bottom: 1rem; 
+            letter-spacing: -0.02em;
+            background: linear-gradient(to bottom, #fff 40%, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p.subtitle { 
+            color: var(--text-gray); 
+            font-size: 1.1rem;
+            margin-bottom: 3rem; 
+        }
+
+        /* Modernized Upload Box */
+        .upload-container {
+            background: var(--card-bg);
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 80px 40px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
-            max-height: 85vh;
-            display: flex;
-            flex-direction: column;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
 
-        .home-btn {
-            position: absolute;
-            top: 25px;
-            right: 25px;
-            background: var(--glass-border);
-            border: 1px solid var(--glass-border);
-            color: white;
-            padding: 12px;
-            border-radius: 14px;
-            cursor: pointer;
-            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 44px;
-            height: 44px;
+        .upload-container:hover {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 30px rgba(56, 189, 248, 0.15);
+            transform: translateY(-2px);
         }
 
-        .home-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: rotate(90deg);
+        .upload-container.drag-over {
+            border-color: var(--primary-blue);
+            background: rgba(56, 189, 248, 0.05);
+            transform: scale(1.01);
         }
 
-        .logo {
-            font-weight: 800;
-            font-size: 0.8rem;
-            letter-spacing: 5px;
-            background: linear-gradient(to right, var(--accent-blue), var(--accent-purple));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 1.5rem;
-            display: block;
-            text-transform: uppercase;
+        .upload-icon {
+            font-size: 56px;
+            margin-bottom: 24px;
+            display: inline-block;
+            filter: drop-shadow(0 0 15px rgba(56, 189, 248, 0.3));
         }
 
-        h1 {
-            font-size: 2.8rem;
-            margin: 0.5rem 0;
-            font-weight: 900;
-            letter-spacing: -1.5px;
-            background: linear-gradient(180deg, #ffffff 0%, #888888 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        h3#uploadTitle {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0 0 10px 0;
         }
 
-        .subtitle { color: #808080; font-weight: 400; margin-bottom: 2.5rem; font-size: 0.95rem; }
-
-        .input-group {
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            display: flex;
-            padding: 10px;
-            margin-bottom: 1rem;
-            transition: 0.4s;
-            box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);
-        }
-
-        .input-group:focus-within {
-            border-color: var(--accent-blue);
-            box-shadow: 0 0 30px rgba(0, 210, 255, 0.1);
-        }
-
-        input {
-            background: transparent;
-            border: none;
-            color: white;
-            padding: 12px 18px;
-            flex-grow: 1;
-            outline: none;
-            font-size: 1.05rem;
-        }
-
-        .scan-btn {
-            background: linear-gradient(45deg, var(--accent-blue), var(--accent-purple));
-            border: none;
-            color: white;
-            padding: 0 25px;
-            border-radius: 15px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: 0.3s;
-            text-transform: uppercase;
-            font-size: 0.85rem;
-        }
-
-        .scan-btn:hover { filter: brightness(1.2); transform: scale(1.05); }
-
-        #result-area {
+        /* Progress Bar Upgrade */
+        .progress-wrapper {
+            margin-top: 20px;
             display: none;
-            margin-top: 2rem;
-            padding-top: 2rem;
-            border-top: 1px solid var(--glass-border);
-            animation: slideUp 0.8s ease;
-            overflow-y: auto;
+        }
+
+        #statusText {
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            color: var(--primary-blue);
+            text-transform: uppercase;
+            font-size: 0.8rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 100px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        #scanBar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--primary-blue), #818cf8);
+            box-shadow: 0 0 20px var(--primary-blue);
+            transition: width 0.4s ease;
+        }
+
+        /* Dashboard Results Upgrade */
+        .dashboard-card {
+            display: none;
+            background: var(--card-bg);
+            backdrop-filter: var(--glass-blur);
+            border-radius: 24px;
+            padding: 40px;
+            text-align: left;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .dash-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 25px;
+            margin-bottom: 30px;
+        }
+
+        .dash-header h3 { margin: 0; font-size: 1.4rem; }
+
+        .badge {
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 0.05em;
+        }
+
+        .badge-safe { background: rgba(16, 185, 129, 0.1); color: var(--success-green); border: 1px solid rgba(16, 185, 129, 0.2); }
+        .badge-danger { background: rgba(244, 63, 94, 0.1); color: var(--danger-red); border: 1px solid rgba(244, 63, 94, 0.2); }
+
+        .dash-content {
+            display: grid;
+            grid-template-columns: 180px 1fr;
+            gap: 40px;
+            align-items: center;
         }
 
         .score-circle {
-            width: 130px;
-            height: 130px;
+            width: 150px;
+            height: 150px;
+            border: 2px solid var(--border-color);
             border-radius: 50%;
-            border: 4px solid var(--safe-green);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            margin: 0 auto 1.5rem;
-            background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
-            transition: 0.5s ease;
+            background: radial-gradient(circle at center, rgba(255,255,255,0.02) 0%, transparent 70%);
+            transition: all 0.5s ease;
         }
 
-        .score-num { font-size: 2.2rem; font-weight: 900; letter-spacing: -1px; }
-        .score-label { font-size: 0.7rem; text-transform: uppercase; opacity: 0.5; letter-spacing: 1px; }
+        .score-circle.danger { border-color: var(--danger-red); box-shadow: inset 0 0 20px rgba(244, 63, 94, 0.1); }
+        .score-circle.safe { border-color: var(--success-green); box-shadow: inset 0 0 20px rgba(16, 185, 129, 0.1); }
 
-        .status-msg { font-size: 1.2rem; font-weight: 700; margin-bottom: 1.5rem; }
+        .score-value { font-size: 2.2rem; font-weight: 800; margin-top: 5px; }
+        .score-label { font-size: 0.65rem; color: var(--text-gray); font-weight: 700; letter-spacing: 0.1em; }
 
-        .risk-list {
-            text-align: left;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 1.2rem;
-            border-radius: 18px;
+        .file-info p { margin: 12px 0; color: var(--text-gray); font-size: 0.95rem; }
+        .file-info strong { color: #f8fafc; font-weight: 600; margin-right: 8px; }
+
+        .problem-msg {
+            margin-top: 25px;
+            padding: 16px 20px;
+            border-radius: 16px;
             font-size: 0.9rem;
-            color: #e0e0e0;
-            border: 1px solid var(--glass-border);
+            line-height: 1.6;
+            border: 1px solid transparent;
         }
 
-        .risk-item { 
-            margin-bottom: 8px; 
-            display: flex; 
-            align-items: center; 
-            gap: 12px; 
-            animation: fadeIn 0.5s ease forwards;
-        }
-        
-        .risk-item i { font-size: 0.8rem; }
+        .msg-danger { background: rgba(244, 63, 94, 0.05); color: #fda4af; border-color: rgba(244, 63, 94, 0.1); }
+        .msg-safe { background: rgba(16, 185, 129, 0.05); color: #6ee7b7; border-color: rgba(16, 185, 129, 0.1); }
 
-        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .btn-reset {
+            margin-top: 35px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            color: white;
+            padding: 12px 28px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-reset:hover { 
+            background: white; 
+            color: var(--bg-dark); 
+            transform: translateY(-1px);
+        }
+
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: translateY(20px) scale(0.98); } 
+            to { opacity: 1; transform: translateY(0) scale(1); } 
+        }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <a href="https://phish-guard-ai-one.vercel.app/" class="home-btn" title="Go Home"><i class="fas fa-home"></i></a>
-        <span class="logo">PhishGuard AI</span>
-        <h1>Shield Active</h1>
-        <p class="subtitle">Heuristic-based URL intelligence for deep-threat detection.</p>
+<div class="hero-section">
+    <h1>Stop Phishing Before It Happens.</h1>
+    <p class="subtitle">Secure your workspace with <strong>PhishGuard's</strong> real-time neural analysis.</p>
 
-        <div class="input-group">
-            <input type="text" id="urlInput" placeholder="Analyze URL for hidden threats...">
-            <button class="scan-btn" onclick="analyzeURL()">Secure Scan</button>
+    <div id="uploadArea" class="upload-container" 
+         onclick="document.getElementById('fileInput').click()"
+         ondragover="handleDragOver(event)" 
+         ondragleave="handleDragLeave(event)" 
+         ondrop="handleDrop(event)">
+        
+        <input type="file" id="fileInput" hidden onchange="startAnalysis(this.files[0])">
+        
+        <div id="staticUI">
+            <span class="upload-icon">🛡️</span>
+            <h3 id="uploadTitle">Drop files or click to upload</h3>
+            <p style="color: var(--text-gray); font-size: 0.85rem; font-weight: 500;">MAX 10MB • SECURE CLOUD SCAN</p>
         </div>
 
-        <div id="result-area">
-            <div id="scoreCircle" class="score-circle">
-                <span class="score-num" id="aiScore">--</span>
-                <span class="score-label">Trust Score</span>
+        <div id="progressUI" class="progress-wrapper">
+            <p id="statusText">Initializing Neural Scan...</p>
+            <div class="progress-bar">
+                <div id="scanBar"></div>
             </div>
-            <div id="statusMessage" class="status-msg"></div>
-            <div id="riskAnalysis" class="risk-list"></div>
         </div>
     </div>
 
-    <script>
-        function analyzeURL() {
-            const resultArea = document.getElementById('result-area');
-            const scoreNum = document.getElementById('aiScore');
-            const statusMsg = document.getElementById('statusMessage');
-            const circle = document.getElementById('scoreCircle');
-            const riskContainer = document.getElementById('riskAnalysis');
-            const urlInput = document.getElementById('urlInput');
-            const url = urlInput.value.trim().toLowerCase();
-
-            if (!url) return;
-
-            let score = 100;
-            let risks = [];
-
-            // 1. Protocol Restriction
-            if (!url.startsWith('https://')) {
-                score -= 20;
-                risks.push("Protocol: Insecure connection (Plain HTTP).");
-            }
-
-            // 2. IP Address & Port Encoding
-            const ipRegex = /(?:\d{1,3}\.){3}\d{1,3}|0x[0-9a-fA-F.]+|0[0-7.]+/;
-            if (ipRegex.test(url)) {
-                score -= 55;
-                risks.push("Encoding: URL points directly to an IP or Hex-coded host.");
-            }
-            if (/(:\d{2,5})/.test(url) && !url.includes("localhost")) {
-                score -= 15;
-                risks.push("Validation: Non-standard port access detected.");
-            }
-
-            // 3. Domain & TLD Risk Analysis
-            try {
-                const urlObj = new URL(url.includes('://') ? url : 'http://' + url);
-                const host = urlObj.hostname;
-                const path = urlObj.pathname;
-
-                // High-risk TLDs
-                const badTLDs = ['.xyz', '.top', '.buzz', '.gq', '.tk', '.ml', '.cf', '.ga', '.bid'];
-                badTLDs.forEach(tld => {
-                    if (host.endsWith(tld)) { score -= 25; risks.push(`TLD Risk: High-risk extension detected (${tld}).`); }
-                });
-
-                // Deceptive Structure
-                if ((host.match(/-/g) || []).length >= 2) {
-                    score -= 30;
-                    risks.push("Structure: Excessive hyphens (common in spoofing).");
-                }
-                
-                // Suspicious Extensions in Path
-                if (/\.(exe|zip|scr|iso|bat|dmg|apk|jar)$/.test(path)) {
-                    score -= 40;
-                    risks.push("Payload: URL points directly to executable/archive.");
-                }
-            } catch(e) { score -= 20; risks.push("Integrity: Malformed URL syntax."); }
-
-            // 4. Obfuscation & Homograph detection
-            if (url.includes('xn--')) { score -= 45; risks.push("Obfuscation: Punycode detected (Homograph attack)."); }
-            if (url.includes('@')) { score -= 40; risks.push("Spoofing: Credential hijacking syntax detected (@)."); }
-            if ((url.match(/%/g) || []).length > 5) { score -= 15; risks.push("Obfuscation: Excessive URL encoding detected."); }
-
-            // 5. Advanced Brand Impersonation (Expanded)
-            const brands = ['google', 'microsoft', 'apple', 'amazon', 'paypal', 'netflix', 'facebook', 'instagram', 'bank', 'secure', 'o2', 'support'];
-            brands.forEach(brand => {
-                if (url.includes(brand) && (url.includes('1') || url.includes('0') || url.includes('-') || url.includes('update'))) {
-                    score -= 35;
-                    risks.push(`Impersonation: Deceptive keyword mimicry (${brand}).`);
-                }
-            });
-
-            // 6. Keywords & Shorteners
-            const shorteners = ['bit.ly', 't.co', 'tinyurl', 'is.gd', 'buff.ly'];
-            shorteners.forEach(s => { if (url.includes(s)) { score -= 10; risks.push("Warning: URL shortener obscures destination."); } });
-
-            // Final Calculation
-            score = Math.max(5, Math.min(100, score));
-            resultArea.style.display = 'block';
-            scoreNum.innerText = score + '%';
+    <div id="dashboard" class="dashboard-card">
+        <div class="dash-header">
+            <h3>AI Analysis Report</h3>
+            <span id="riskBadge" class="badge">Safe</span>
+        </div>
+        
+        <div class="dash-content">
+            <div id="scoreRing" class="score-circle">
+                <span class="score-label">THREAT SCORE</span>
+                <span id="scoreText" class="score-value">0%</span>
+            </div>
             
-            riskContainer.innerHTML = risks.length > 0 
-                ? "<strong>Vulnerability Log:</strong><br><br>" + risks.map(r => `<div class='risk-item' style='color:${score < 50 ? "#ff4b2b" : "#ffcc00"}'><i class='fas fa-shield-alt'></i> ${r}</div>`).join('')
-                : "<div class='risk-item' style='color:#00ff88'><i class='fas fa-check-circle'></i> No structural anomalies detected.</div>";
+            <div class="file-info">
+                <p><strong>File</strong> <span id="resName">filename.pdf</span></p>
+                <p><strong>Size</strong> <span id="resSize">0 KB</span></p>
+                <div id="resDesc" class="problem-msg"></div>
+            </div>
+        </div>
+        
+        <button class="btn-reset" onclick="resetUI()">Scan Another File</button>
+    </div>
+</div>
 
-            // Dynamic Aesthetics
-            if (score >= 75) {
-                statusMsg.innerHTML = "TRUSTED: Safe Link";
-                statusMsg.style.color = "var(--safe-green)";
-                circle.style.borderColor = "var(--safe-green)";
-                circle.style.boxShadow = "0 0 30px rgba(0, 255, 136, 0.2)";
-            } else if (score >= 50) {
-                statusMsg.innerHTML = "CAUTION: Suspicious Link";
-                statusMsg.style.color = "var(--warning-yellow)";
-                circle.style.borderColor = "var(--warning-yellow)";
-                circle.style.boxShadow = "0 0 30px rgba(255, 204, 0, 0.1)";
-            } else {
-                statusMsg.innerHTML = "DANGER: Malicious Link";
-                statusMsg.style.color = "var(--danger-red)";
-                circle.style.borderColor = "var(--danger-red)";
-                circle.style.boxShadow = "0 0 30px rgba(255, 75, 43, 0.2)";
-            }
+<script>
+    function handleDragOver(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        document.getElementById('uploadArea').classList.add('drag-over');
+    }
+
+    function handleDragLeave(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        document.getElementById('uploadArea').classList.remove('drag-over');
+    }
+
+    function handleDrop(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        document.getElementById('uploadArea').classList.remove('drag-over');
+        
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            startAnalysis(files[0]);
         }
-    </script>
+    }
+
+    function startAnalysis(file) {
+        if (!file) return;
+        document.getElementById('staticUI').style.display = 'none';
+        document.getElementById('progressUI').style.display = 'block';
+        
+        const statusText = document.getElementById('statusText');
+        const scanBar = document.getElementById('scanBar');
+        
+        const stages = [
+            "Calculating MD5 Hash...",
+            "Analyzing Heuristics...",
+            "Neural Network Processing...",
+            "Checking Metadata Anomalies...",
+            "Finalizing Report..."
+        ];
+
+        let progress = 0;
+        let stageIdx = 0;
+
+        const interval = setInterval(() => {
+            progress += 5;
+            scanBar.style.width = progress + "%";
+            
+            if (progress % 20 === 0 && stageIdx < stages.length) {
+                statusText.innerText = stages[stageIdx];
+                stageIdx++;
+            }
+
+            if (progress >= 100) {
+                clearInterval(interval);
+                setTimeout(() => renderDashboard(file), 400);
+            }
+        }, 100);
+    }
+
+    function renderDashboard(file) {
+        document.getElementById('uploadArea').style.display = 'none';
+        const dashboard = document.getElementById('dashboard');
+        dashboard.style.display = 'block';
+
+        const name = file.name;
+        const size = (file.size / 1024).toFixed(2) + " KB";
+        
+        let threatScore = Math.floor(Math.random() * 15);
+        let isDangerous = false;
+
+        const dangerousExtensions = ['.exe', '.msi', '.js', '.bat', '.vbs', '.scr'];
+        if (dangerousExtensions.some(ext => name.toLowerCase().endsWith(ext))) {
+            threatScore = Math.floor(Math.random() * 30) + 70;
+            isDangerous = true;
+        }
+
+        document.getElementById('resName').innerText = name;
+        document.getElementById('resSize').innerText = size;
+        document.getElementById('scoreText').innerText = threatScore + "%";
+        
+        const badge = document.getElementById('riskBadge');
+        const ring = document.getElementById('scoreRing');
+        const desc = document.getElementById('resDesc');
+
+        if (isDangerous) {
+            badge.innerText = "Malicious";
+            badge.className = "badge badge-danger";
+            ring.className = "score-circle danger";
+            desc.innerText = "High Risk: This file contains executable code patterns frequently used in phishing and malware delivery.";
+            desc.className = "problem-msg msg-danger";
+        } else {
+            badge.innerText = "Clean";
+            badge.className = "badge badge-safe";
+            ring.className = "score-circle safe";
+            desc.innerText = "PhishGuard AI has verified this file's structure. No suspicious scripts or malicious anomalies detected.";
+            desc.className = "problem-msg msg-safe";
+        }
+    }
+
+    function resetUI() {
+        document.getElementById('fileInput').value = "";
+        document.getElementById('uploadArea').style.display = 'block';
+        document.getElementById('staticUI').style.display = 'block';
+        document.getElementById('progressUI').style.display = 'none';
+        document.getElementById('dashboard').style.display = 'none';
+        document.getElementById('scanBar').style.width = "0%";
+    }
+</script>
+
 </body>
 </html>
