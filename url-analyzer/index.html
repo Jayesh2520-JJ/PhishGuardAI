@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PhishGuard AI | File Analyzer</title>
+    <title>PhishGuard AI | URL Analyzer</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
             --bg-dark: #07090e;
@@ -38,348 +39,143 @@
             text-align: center;
         }
 
-        h1 { 
-            font-size: 3.2rem; 
-            font-weight: 800; 
-            margin-bottom: 1rem; 
-            letter-spacing: -0.02em;
-            background: linear-gradient(to bottom, #fff 40%, #94a3b8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        p.subtitle { 
-            color: var(--text-gray); 
-            font-size: 1.1rem;
-            margin-bottom: 3rem; 
-        }
-
-        /* Modernized Upload Box */
-        .upload-container {
+        .analyzer-card {
             background: var(--card-bg);
             backdrop-filter: var(--glass-blur);
             border: 1px solid var(--border-color);
             border-radius: 24px;
-            padding: 80px 40px;
-            cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 60px 40px;
             position: relative;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
 
-        .upload-container:hover {
-            border-color: var(--primary-blue);
-            box-shadow: 0 0 30px rgba(56, 189, 248, 0.15);
-            transform: translateY(-2px);
-        }
-
-        .upload-container.drag-over {
-            border-color: var(--primary-blue);
-            background: rgba(56, 189, 248, 0.05);
-            transform: scale(1.01);
-        }
-
-        .upload-icon {
-            font-size: 56px;
-            margin-bottom: 24px;
-            display: inline-block;
-            filter: drop-shadow(0 0 15px rgba(56, 189, 248, 0.3));
-        }
-
-        h3#uploadTitle {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin: 0 0 10px 0;
-        }
-
-        /* Progress Bar Upgrade */
-        .progress-wrapper {
-            margin-top: 20px;
-            display: none;
-        }
-
-        #statusText {
-            font-weight: 600;
-            letter-spacing: 0.05em;
-            color: var(--primary-blue);
-            text-transform: uppercase;
-            font-size: 0.8rem;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 6px;
+        .home-btn {
+            position: absolute;
+            top: 25px;
+            right: 25px;
             background: rgba(255, 255, 255, 0.05);
-            border-radius: 100px;
-            overflow: hidden;
-            margin: 20px 0;
-        }
-
-        #scanBar {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, var(--primary-blue), #818cf8);
-            box-shadow: 0 0 20px var(--primary-blue);
-            transition: width 0.4s ease;
-        }
-
-        /* Dashboard Results Upgrade */
-        .dashboard-card {
-            display: none;
-            background: var(--card-bg);
-            backdrop-filter: var(--glass-blur);
-            border-radius: 24px;
-            padding: 40px;
-            text-align: left;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .dash-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 25px;
-            margin-bottom: 30px;
-        }
-
-        .dash-header h3 { margin: 0; font-size: 1.4rem; }
-
-        .badge {
-            padding: 8px 16px;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            font-weight: 800;
-            letter-spacing: 0.05em;
-        }
-
-        .badge-safe { background: rgba(16, 185, 129, 0.1); color: var(--success-green); border: 1px solid rgba(16, 185, 129, 0.2); }
-        .badge-danger { background: rgba(244, 63, 94, 0.1); color: var(--danger-red); border: 1px solid rgba(244, 63, 94, 0.2); }
-
-        .dash-content {
-            display: grid;
-            grid-template-columns: 180px 1fr;
-            gap: 40px;
-            align-items: center;
-        }
-
-        .score-circle {
-            width: 150px;
-            height: 150px;
-            border: 2px solid var(--border-color);
-            border-radius: 50%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background: radial-gradient(circle at center, rgba(255,255,255,0.02) 0%, transparent 70%);
-            transition: all 0.5s ease;
-        }
-
-        .score-circle.danger { border-color: var(--danger-red); box-shadow: inset 0 0 20px rgba(244, 63, 94, 0.1); }
-        .score-circle.safe { border-color: var(--success-green); box-shadow: inset 0 0 20px rgba(16, 185, 129, 0.1); }
-
-        .score-value { font-size: 2.2rem; font-weight: 800; margin-top: 5px; }
-        .score-label { font-size: 0.65rem; color: var(--text-gray); font-weight: 700; letter-spacing: 0.1em; }
-
-        .file-info p { margin: 12px 0; color: var(--text-gray); font-size: 0.95rem; }
-        .file-info strong { color: #f8fafc; font-weight: 600; margin-right: 8px; }
-
-        .problem-msg {
-            margin-top: 25px;
-            padding: 16px 20px;
-            border-radius: 16px;
-            font-size: 0.9rem;
-            line-height: 1.6;
-            border: 1px solid transparent;
-        }
-
-        .msg-danger { background: rgba(244, 63, 94, 0.05); color: #fda4af; border-color: rgba(244, 63, 94, 0.1); }
-        .msg-safe { background: rgba(16, 185, 129, 0.05); color: #6ee7b7; border-color: rgba(16, 185, 129, 0.1); }
-
-        .btn-reset {
-            margin-top: 35px;
-            background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--border-color);
             color: white;
-            padding: 12px 28px;
+            padding: 10px;
             border-radius: 12px;
-            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .home-btn:hover { background: rgba(255, 255, 255, 0.1); }
+
+        .brand-label {
+            color: var(--primary-blue);
+            font-weight: 800;
+            letter-spacing: 0.2em;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        h1 { 
+            font-size: 3.5rem; 
+            font-weight: 800; 
+            margin: 0 0 10px 0;
+            background: linear-gradient(to bottom, #fff 60%, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle { color: var(--text-gray); margin-bottom: 40px; }
+
+        .input-group {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            display: flex;
+            padding: 8px;
+            gap: 10px;
+        }
+
+        input {
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 12px 20px;
+            flex: 1;
+            outline: none;
+            font-size: 1rem;
+        }
+
+        .scan-btn {
+            background: linear-gradient(90deg, #06b6d4, #3b82f6);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 12px;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .btn-reset:hover { 
-            background: white; 
-            color: var(--bg-dark); 
-            transform: translateY(-1px);
-        }
-
-        @keyframes fadeIn { 
-            from { opacity: 0; transform: translateY(20px) scale(0.98); } 
-            to { opacity: 1; transform: translateY(0) scale(1); } 
-        }
+        /* Results Logic Placeholder */
+        .progress-wrapper { display: none; margin-top: 30px; }
+        .progress-bar { width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; margin-top: 15px; }
+        #scanBar { width: 0%; height: 100%; background: var(--primary-blue); transition: width 0.3s; }
     </style>
 </head>
 <body>
 
 <div class="hero-section">
-    <h1>Stop Phishing Before It Happens.</h1>
-    <p class="subtitle">Secure your workspace with <strong>PhishGuard's</strong> real-time neural analysis.</p>
+    <div class="analyzer-card">
+        <a href="../index.html" class="home-btn"><i class="fas fa-home"></i></a>
+        
+        <span class="brand-label">PhishGuard AI</span>
+        <h1>Deep Analysis</h1>
+        <p class="subtitle">Multi-vector phishing detection engine.</p>
 
-    <div id="uploadArea" class="upload-container" 
-         onclick="document.getElementById('fileInput').click()"
-         ondragover="handleDragOver(event)" 
-         ondragleave="handleDragLeave(event)" 
-         ondrop="handleDrop(event)">
-        
-        <input type="file" id="fileInput" hidden onchange="startAnalysis(this.files[0])">
-        
-        <div id="staticUI">
-            <span class="upload-icon">🛡️</span>
-            <h3 id="uploadTitle">Drop files or click to upload</h3>
-            <p style="color: var(--text-gray); font-size: 0.85rem; font-weight: 500;">MAX 10MB • SECURE CLOUD SCAN</p>
+        <div id="inputArea">
+            <div class="input-group">
+                <input type="text" id="urlInput" placeholder="Paste suspicious URL here...">
+                <button class="scan-btn" onclick="runScan()">
+                    <i class="fas fa-bolt"></i> SCAN
+                </button>
+            </div>
         </div>
 
         <div id="progressUI" class="progress-wrapper">
-            <p id="statusText">Initializing Neural Scan...</p>
+            <p id="statusText" style="color: var(--primary-blue); font-size: 0.8rem; font-weight: 700;"></p>
             <div class="progress-bar">
                 <div id="scanBar"></div>
             </div>
         </div>
     </div>
-
-    <div id="dashboard" class="dashboard-card">
-        <div class="dash-header">
-            <h3>AI Analysis Report</h3>
-            <span id="riskBadge" class="badge">Safe</span>
-        </div>
-        
-        <div class="dash-content">
-            <div id="scoreRing" class="score-circle">
-                <span class="score-label">THREAT SCORE</span>
-                <span id="scoreText" class="score-value">0%</span>
-            </div>
-            
-            <div class="file-info">
-                <p><strong>File</strong> <span id="resName">filename.pdf</span></p>
-                <p><strong>Size</strong> <span id="resSize">0 KB</span></p>
-                <div id="resDesc" class="problem-msg"></div>
-            </div>
-        </div>
-        
-        <button class="btn-reset" onclick="resetUI()">Scan Another File</button>
-    </div>
 </div>
 
 <script>
-    function handleDragOver(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        document.getElementById('uploadArea').classList.add('drag-over');
-    }
-
-    function handleDragLeave(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        document.getElementById('uploadArea').classList.remove('drag-over');
-    }
-
-    function handleDrop(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        document.getElementById('uploadArea').classList.remove('drag-over');
+    function runScan() {
+        const url = document.getElementById('urlInput').value;
+        if(!url) return alert("Please paste a URL");
         
-        const files = e.dataTransfer.files;
-        if (files.length > 0) {
-            startAnalysis(files[0]);
-        }
-    }
-
-    function startAnalysis(file) {
-        if (!file) return;
-        document.getElementById('staticUI').style.display = 'none';
+        document.getElementById('inputArea').style.display = 'none';
         document.getElementById('progressUI').style.display = 'block';
         
-        const statusText = document.getElementById('statusText');
-        const scanBar = document.getElementById('scanBar');
+        let bar = document.getElementById('scanBar');
+        let status = document.getElementById('statusText');
+        let width = 0;
         
-        const stages = [
-            "Calculating MD5 Hash...",
-            "Analyzing Heuristics...",
-            "Neural Network Processing...",
-            "Checking Metadata Anomalies...",
-            "Finalizing Report..."
-        ];
-
-        let progress = 0;
-        let stageIdx = 0;
-
         const interval = setInterval(() => {
-            progress += 5;
-            scanBar.style.width = progress + "%";
+            width += 5;
+            bar.style.width = width + "%";
+            if(width < 30) status.innerText = "Analyzing Domain...";
+            else if(width < 70) status.innerText = "Checking SSL Trust...";
+            else status.innerText = "Finalizing Report...";
             
-            if (progress % 20 === 0 && stageIdx < stages.length) {
-                statusText.innerText = stages[stageIdx];
-                stageIdx++;
-            }
-
-            if (progress >= 100) {
+            if(width >= 100) {
                 clearInterval(interval);
-                setTimeout(() => renderDashboard(file), 400);
+                alert("Scan Complete for: " + url);
+                location.reload();
             }
         }, 100);
-    }
-
-    function renderDashboard(file) {
-        document.getElementById('uploadArea').style.display = 'none';
-        const dashboard = document.getElementById('dashboard');
-        dashboard.style.display = 'block';
-
-        const name = file.name;
-        const size = (file.size / 1024).toFixed(2) + " KB";
-        
-        let threatScore = Math.floor(Math.random() * 15);
-        let isDangerous = false;
-
-        const dangerousExtensions = ['.exe', '.msi', '.js', '.bat', '.vbs', '.scr'];
-        if (dangerousExtensions.some(ext => name.toLowerCase().endsWith(ext))) {
-            threatScore = Math.floor(Math.random() * 30) + 70;
-            isDangerous = true;
-        }
-
-        document.getElementById('resName').innerText = name;
-        document.getElementById('resSize').innerText = size;
-        document.getElementById('scoreText').innerText = threatScore + "%";
-        
-        const badge = document.getElementById('riskBadge');
-        const ring = document.getElementById('scoreRing');
-        const desc = document.getElementById('resDesc');
-
-        if (isDangerous) {
-            badge.innerText = "Malicious";
-            badge.className = "badge badge-danger";
-            ring.className = "score-circle danger";
-            desc.innerText = "High Risk: This file contains executable code patterns frequently used in phishing and malware delivery.";
-            desc.className = "problem-msg msg-danger";
-        } else {
-            badge.innerText = "Clean";
-            badge.className = "badge badge-safe";
-            ring.className = "score-circle safe";
-            desc.innerText = "PhishGuard AI has verified this file's structure. No suspicious scripts or malicious anomalies detected.";
-            desc.className = "problem-msg msg-safe";
-        }
-    }
-
-    function resetUI() {
-        document.getElementById('fileInput').value = "";
-        document.getElementById('uploadArea').style.display = 'block';
-        document.getElementById('staticUI').style.display = 'block';
-        document.getElementById('progressUI').style.display = 'none';
-        document.getElementById('dashboard').style.display = 'none';
-        document.getElementById('scanBar').style.width = "0%";
     }
 </script>
 
